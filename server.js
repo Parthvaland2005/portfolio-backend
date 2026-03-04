@@ -1,19 +1,17 @@
-require("dotenv").config();   // 👈 ADD THIS LINE
+require("dotenv").config();
 
 const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
-const bodyParser = require("body-parser");
-const path = require("path");
 
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static(__dirname));
+app.use(express.json());
 
+// Test route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.send("Backend is running 🚀");
 });
 
 app.post("/send", async (req, res) => {
