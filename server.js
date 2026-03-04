@@ -7,7 +7,11 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors({
-  origin: "https://parthvaland2005.github.io"
+  origin: [
+    "https://parthvaland2005.github.io"
+  ],
+  methods: ["POST", "GET"],
+  credentials: true
 }));
 app.use(express.json());
 
@@ -15,22 +19,20 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
-
 app.post("/send", async (req, res) => {
+  console.log("SEND ROUTE HIT");
+  console.log("Body:", req.body);
+
   try {
     const { name, email, message } = req.body;
 
     let transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-await transporter.verify();
-console.log("SMTP Ready");
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
 
     let mailOptions = {
       from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
@@ -45,10 +47,11 @@ Message: ${message}
 
     await transporter.sendMail(mailOptions);
 
+    console.log("Email sent successfully");
     res.json({ success: true });
 
   } catch (error) {
-    console.error(error);
+    console.error("EMAIL ERROR:", error);
     res.status(500).json({ success: false });
   }
 });
