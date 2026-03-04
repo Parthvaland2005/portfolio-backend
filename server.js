@@ -21,12 +21,16 @@ app.post("/send", async (req, res) => {
     const { name, email, message } = req.body;
 
     let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+await transporter.verify();
+console.log("SMTP Ready");
 
     let mailOptions = {
       from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
